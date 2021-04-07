@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 app.get('/database/showall',function(req,res){
 	client.query('SELECT * FROM ${tableName};', (err, outcome) => {   
 		if (err) throw err;
-		else {
+		else { 
 			res.send(outcome)
 			console.log("ShowAll requested: responded SUCCESS")
 		}
