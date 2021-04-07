@@ -1,0 +1,19 @@
+{
+  "name": "space-clicker-server-demo",
+  "version": "1.0.0",
+  "description": "Server for the Space Clicker game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samvermeir1606/space-clicker-server-demo.git"
+  },
+  "author": "Sam Vermeir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samvermeir1606/space-clicker-server-demo/issues"
+  },
+  "homepage": "https://github.com/samvermeir1606/space-clicker-server-demo#readme"
+}
