@@ -41,10 +41,14 @@ app.get('/player/create/:username',function(req,res){
 			console.log("")
 			console.log(outcome.rows.length)
 			if (outcome.rows.length>0) {
+
+				console.log("We're in here "+UserExists)
 				UserExists=true;
+				console.log("We're in here2 "+UserExists)
 			}
 		}
 	})
+	console.log("Before the if statement "+UserExists)
 
 	if (UserExists) {
 		res.send("User already exists")
