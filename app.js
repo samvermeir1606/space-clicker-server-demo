@@ -123,7 +123,7 @@ app.get('/player/namechange/:username/:newdisplayname',function(req,res){
 				console.log("FAILED: User doesn't exist.")
 			}
 			else {
-				client.query("UPDATE userlist SET displayname= '"newdisplayname"' WHERE username='"+username+"';", (err, outcome) => {   
+				client.query("UPDATE userlist SET displayname= '"+newdisplayname+"' WHERE username='"+username+"';", (err, outcome) => {   
 					if (err) throw err;
 					else {
 						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Displayname updated."});
@@ -135,8 +135,6 @@ app.get('/player/namechange/:username/:newdisplayname',function(req,res){
 		}
 	})
 })
-
-
 
 
 
