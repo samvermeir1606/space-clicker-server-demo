@@ -170,8 +170,9 @@ app.get('/player/login/:username',function(req,res){
 				client.query("UPDATE userlist SET lastonline= '"+lastonline+"' WHERE username='"+username+"';", (err, outcome) => {   
 					if (err) throw err;
 					else {
+						res.send(outcome)
 						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",BannedState: outcome.rows[0].banned});
-						res.send(output)
+						//res.send(output)
 						console.log("SUCCESS: Player logged in")
 					}
 				})
