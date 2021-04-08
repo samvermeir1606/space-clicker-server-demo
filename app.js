@@ -17,6 +17,7 @@ client.connect();
 
 
 app.listen(process.env.PORT || port, () => {
+	res.setHeader('Content-Type', 'application/json');
   	console.log(`Example app listening at http://localhost:${port}`)
   	console.log("")
 })
