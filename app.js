@@ -85,7 +85,27 @@ app.get('/player/delete/:username',function(req,res){
 	})
 })
 
+app.get('/player/info/:username',function(req,res){
+	var username=req.params.username;
+	console.log("Info Player Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcome.rows.length==0) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User doesn't exist."});
+				res.send(output)
+				console.log("FAILED: User doesn't exist.")
+			}
+			else {
 
+				var outcome=JSON.stringify({Status:"SUCCESS",StatusDescription: "User found.",PlayerData: {userid:outcome.rows[0].userid,username:outcome.rows[0].username,displayname:outcome.rows[0].displayname,accountcreated:outcome.rows[0].accountcreated,lastonline:outcome.rows[0].lastonline,score:outcome.rows[0].score,highscoreposted:outcome.rows[0].highscoreposted,banned:outcome.rows[0].banned,}})
+				res.send(output);
+				console.log("SUCCESS: User found.")
+			}
+		}
+	})
+})
 
 
 
