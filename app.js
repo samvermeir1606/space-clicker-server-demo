@@ -17,7 +17,6 @@ client.connect();
 
 
 app.listen(process.env.PORT || port, () => {
-	res.setHeader('Content-Type', 'application/json');
   	console.log(`Example app listening at http://localhost:${port}`)
   	console.log("")
 })
@@ -87,6 +86,7 @@ app.get('/player/delete/:username',function(req,res){
 })
 
 app.get('/player/info/:username',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
 	var username=req.params.username;
 	console.log("Info Player Request received for username: "+username)
 	// check if player already exists
