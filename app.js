@@ -150,11 +150,15 @@ app.get('/player/login/:username',function(req,res){
 				var accountcreated = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
 				var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
 				var highscoreposted = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
-			
+				
+				//create the user
 				client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
 					if (err) throw err;
 					else {
-						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "User created", BannedState: outcome.rows[0].banned});
+
+
+
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "User created", BannedState: "0"});
 						res.send(output)
 						console.log("User Created in database")
 					}
@@ -170,10 +174,16 @@ app.get('/player/login/:username',function(req,res){
 				client.query("UPDATE userlist SET lastonline= '"+lastonline+"' WHERE username='"+username+"';", (err, outcome) => {   
 					if (err) throw err;
 					else {
-						res.send(outcome)
-						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",BannedState: outcome.rows[0].banned});
-						//res.send(output)
-						console.log("SUCCESS: Player logged in")
+						//get user info
+						client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+							if (err) throw err;
+							else {
+								var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",BannedState: outcome.rows[0].banned});
+								//res.send(output)
+								console.log("SUCCESS: Player logged in")
+							}
+						})
+
 					}
 				})
 			}
