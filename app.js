@@ -52,7 +52,7 @@ app.get('/player/create/:username',function(req,res){
 		var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
 		var highscoreposted = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
 	
-		client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet',"+accountcreated+","+lastonline+", 0,"+highscoreposted+",0);", (err, outcome) => {   
+		client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
 			if (err) throw err;
 			else {
 				res.send("User Created in database")
@@ -60,10 +60,6 @@ app.get('/player/create/:username',function(req,res){
 			}
 		})
 	}
-
-
-
-
 
 
 
