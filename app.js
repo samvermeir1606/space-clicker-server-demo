@@ -99,23 +99,23 @@ app.get('/player/info/:username',function(req,res){
 			}
 			else {
 
-				var outcome=JSON.stringify(
-					{
-						Status:"SUCCESS",
-						StatusDescription: "User found.",
-						PlayerData: 
-						{
-							userid:outcome.rows[0].userid,
-							username:outcome.rows[0].username,
-							displayname:outcome.rows[0].displayname,
-							accountcreated:outcome.rows[0].accountcreated,
-							lastonline:outcome.rows[0].lastonline,
-							score:outcome.rows[0].score,
-							highscoreposted:outcome.rows[0].highscoreposted,
-							banned:outcome.rows[0].banned
-						}
-					}
-				)
+				var outcome=JSON.stringify({userid: outcome.rows[0].userid})
+					//{
+					//	Status:"SUCCESS",
+					//	StatusDescription: "User found.",
+					//	PlayerData: 
+					//	{
+					//		userid: outcome.rows[0].userid,
+					//		username:outcome.rows[0].username,
+					//		displayname:outcome.rows[0].displayname,
+					//		accountcreated:outcome.rows[0].accountcreated,
+					//		lastonline:outcome.rows[0].lastonline,
+					//		score:outcome.rows[0].score,
+					//		highscoreposted:outcome.rows[0].highscoreposted,
+					//		banned:outcome.rows[0].banned
+					//	}
+					//}
+				//)
 				res.send(output);
 				console.log("SUCCESS: User found.")
 			}
