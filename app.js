@@ -169,18 +169,19 @@ app.get('/player/login/:username',function(req,res){
 				console.log("SUCCESS: User Created.")
 			}
 			else {
+
 				console.log("User found")
 				var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
-
-				client.query("UPDATE userlist SET lastonline= '"+lastonline+"' WHERE username='"+username+"';", (err, outcome) => {   
+				var previouslastonline=outcome.rows[0].lastonline;
+				client.query("UPDATE userlist SET lastonline= '"+lastonline+"' WHERE username='"+username+"';", (err, outcomeupdate) => {   
 					if (err) throw err;
 					else {
 						console.log("User updated")
 						//get user info
-						client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+						client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcomegetinfo) => {   
 							if (err) throw err;
 							else {
-								var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",BannedState: outcome.rows[0].banned});
+								var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",lastonline:previouslastonline,BannedState: outcome.rows[0].banned});
 								res.send(output)
 								console.log("SUCCESS: Player logged in")
 							}
