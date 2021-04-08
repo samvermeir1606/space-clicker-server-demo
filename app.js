@@ -37,6 +37,9 @@ app.get('/player/create/:username',function(req,res){
 	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
 		if (err) throw err;
 		else {
+			console.log(outcome.rows)
+			console.log("")
+			console.log(outcome.rows.length)
 			if (outcome.rows.length>0) {
 				UserExists=true;
 			}
@@ -60,10 +63,6 @@ app.get('/player/create/:username',function(req,res){
 			}
 		})
 	}
-
-
-
-
 })
 
 
