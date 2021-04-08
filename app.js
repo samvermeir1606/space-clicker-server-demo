@@ -66,7 +66,7 @@ app.get('/player/delete/:username',function(req,res){
 	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
 		if (err) throw err;
 		else {
-			if (outcomee.rows.length==0) {
+			if (outcome.rows.length==0) {
 				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User doesn't exist."});
 				res.send(output)
 				console.log("FAILED: User doesn't exist.")
