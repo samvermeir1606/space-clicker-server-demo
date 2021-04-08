@@ -32,41 +32,30 @@ app.get('/', (req, res) => {
 app.get('/player/create/:username',function(req,res){
 	var username=req.params.username;
 	console.log("Create Player Request received for username: "+username)
-	var UserExists=false;
 	// check if player already exists
 	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
 		if (err) throw err;
 		else {
-			console.log(outcome.rows)
-			console.log("")
-			console.log(outcome.rows.length)
 			if (outcome.rows.length>0) {
-
-				console.log("We're in here "+UserExists)
-				UserExists=true;
-				console.log("We're in here2 "+UserExists)
+				res.send("User already exists")
+				console.log("This user already exists...")
+			}
+			else {
+				var accountcreated = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+				var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+				var highscoreposted = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+			
+				client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
+					if (err) throw err;
+					else {
+						res.send("User Created in database")
+						console.log("User Created in database")
+					}
+				})
 			}
 		}
 	})
-	console.log("Before the if statement "+UserExists)
-
-	if (UserExists) {
-		res.send("User already exists")
-		console.log("This user already exists...")
-	}
-	else {
-		var accountcreated = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
-		var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
-		var highscoreposted = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
 	
-		client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
-			if (err) throw err;
-			else {
-				res.send("User Created in database")
-				console.log("User Created in database")
-			}
-		})
-	}
 })
 
 
