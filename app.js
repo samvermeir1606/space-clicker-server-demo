@@ -108,6 +108,37 @@ app.get('/player/info/:username',function(req,res){
 	})
 })
 
+app.get('/player/namechange/:username/:newdisplayname',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var username=req.params.username;
+	var newdisplayname=req.params.newdisplayname;
+	console.log("Name Change Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcome.rows.length==0) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User doesn't exist."});
+				res.send(output)
+				console.log("FAILED: User doesn't exist.")
+			}
+			else {
+				client.query("UPDATE userlist SET displayname= '"newdisplayname"' WHERE username='"+username+"';", (err, outcome) => {   
+					if (err) throw err;
+					else {
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Displayname updated."});
+						res.send(output)
+						console.log("SUCCESS: display name changed")
+					}
+				})
+			}
+		}
+	})
+})
+
+
+
+
 
 
 
