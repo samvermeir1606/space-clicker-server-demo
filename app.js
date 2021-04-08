@@ -37,7 +37,7 @@ app.get('/player/create/:username',function(req,res){
 		if (err) throw err;
 		else {
 			if (outcome.rows.length>0) {
-				var output=JSON.stringify({"Status": "FAILED","StatusDescription": "User already exists."});
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User already exists."});
 				res.send(output)
 				console.log("This user already exists...")
 			}
@@ -49,7 +49,7 @@ app.get('/player/create/:username',function(req,res){
 				client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
 					if (err) throw err;
 					else {
-						var output=JSON.stringify({"Status":"SUCCESS","StatusDescription": "User created"});
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "User created"});
 						res.send(output)
 						console.log("User Created in database")
 					}
@@ -57,9 +57,33 @@ app.get('/player/create/:username',function(req,res){
 			}
 		}
 	})
-	
 })
 
+app.get('/player/delete/:username',function(req,res){
+	var username=req.params.username;
+	console.log("Delete Player Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcomee.rows.length==0) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User doesn't exist."});
+				res.send(output)
+				console.log("FAILED: User doesn't exist.")
+			}
+			else {
+				client.querry("DELETE FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+					if (err) throw err;
+					else {
+						var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "User deleted."});
+						res.send(output)
+						console.log("SUCCESS: User deleted.")
+					}
+				})
+			}
+		}
+	})
+})
 
 
 
