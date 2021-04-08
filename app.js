@@ -136,6 +136,53 @@ app.get('/player/namechange/:username/:newdisplayname',function(req,res){
 	})
 })
 
+app.get('/player/login/:username',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var username=req.params.username;
+	console.log("Login Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcome.rows.length==0) {
+				console.log("User with username: "+username+" does not exist yet. Creating...")
+				
+				var accountcreated = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+				var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+				var highscoreposted = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+			
+				client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
+					if (err) throw err;
+					else {
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "User created", BannedState: outcome.rows[0].banned});
+						res.send(output)
+						console.log("User Created in database")
+					}
+				})
+
+				var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "User Created."});
+				res.send(output)
+				console.log("SUCCESS: User Created.")
+			}
+			else {
+				var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+
+				client.query("UPDATE userlist SET lastonline= '"+lastonline+"' WHERE username='"+username+"';", (err, outcome) => {   
+					if (err) throw err;
+					else {
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",BannedState: outcome.rows[0].banned});
+						res.send(output)
+						console.log("SUCCESS: Player logged in")
+					}
+				})
+			}
+		}
+	})
+})
+
+
+
+
 
 
 
@@ -162,7 +209,7 @@ app.get('/database/deleteall',function(req,res){
 	})
 })
 
-app.get('/database/deleteone/:userid',function(req,res){
+app.get('/database/deleteone/userid/:userid',function(req,res){
 	client.query("DELETE FROM userlist WHERE userid = "+req.params.userid+";", (err, outcome) => {   
 		if (err) throw err;
 		else {
@@ -171,3 +218,15 @@ app.get('/database/deleteone/:userid',function(req,res){
 		}
 	})
 })
+
+app.get('/database/deleteone/username/:username',function(req,res){
+	client.query("DELETE FROM userlist WHERE username = "+req.params.username+";", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			res.send(outcome)
+			console.log("DELETE ONE requested: responded SUCCESS")
+		}
+	})
+})
+
+
