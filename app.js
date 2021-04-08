@@ -37,7 +37,8 @@ app.get('/player/create/:username',function(req,res){
 		if (err) throw err;
 		else {
 			if (outcome.rows.length>0) {
-				res.send("User already exists")
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User already exists."});
+				res.send(output)
 				console.log("This user already exists...")
 			}
 			else {
@@ -48,7 +49,8 @@ app.get('/player/create/:username',function(req,res){
 				client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
 					if (err) throw err;
 					else {
-						res.send("User Created in database")
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "User created"});
+						res.send(output)
 						console.log("User Created in database")
 					}
 				})
