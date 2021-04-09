@@ -293,10 +293,12 @@ app.get('/rank/top/:amount',function(req,res){
 	// check if player already exists
 	client.query("SELECT * FROM userlist ORDER BY score DESC LIMIT "+amount+";", (err, outcome) => {   
 		if (err) throw err;
+
 		else {
 			var localRanks=[amount];
 			for (var i = 0; i < outcome.rows.length; i++) {
 				console.log("retrieving profile data for "+i)
+				console.log(outcome.rows[i])
 				var Profile={DisplayName:outcome.rows[i].displayname,Score:outcome.rows[i].score}
 				//localRanks[i]=Profile;
 			}
