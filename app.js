@@ -169,6 +169,7 @@ app.get('/player/login/:username',function(req,res){
 				console.log("SUCCESS: User Created.")
 			}
 			else {
+				console.log("TODO: Use the 'banned since' and 'banned until' to determine if someone is still banned and set the dates in the database")
 
 				console.log("User found")
 				var lastonline = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
@@ -221,6 +222,58 @@ app.get('/player/scorechange/:username/:newscore',function(req,res){
 		}
 	})
 })
+
+app.get('/player/ban/set/:username/:banstate',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var username=req.params.username;
+	var banstate=req.params.banstate;
+	console.log("Ban Change Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcome.rows.length==0) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User doesn't exist."});
+				res.send(output)
+				console.log("FAILED: User doesn't exist.")
+			}
+			else {
+				console.log("TODO: Use the 'banned since' and 'banned until' to determine if someone is still banned and set the dates in the database")
+				client.query("UPDATE userlist SET banned= '"+banstate+"' WHERE username='"+username+"';", (err, outcome) => {   
+					if (err) throw err;
+					else {
+						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Ban updated."});
+						res.send(output)
+						console.log("SUCCESS: Ban changed")
+					}
+				})
+			}
+		}
+	})
+})
+
+app.get('/player/ban/info/:username',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var username=req.params.username;
+	console.log("Ban Info Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcome.rows.length==0) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "User doesn't exist."});
+				res.send(output)
+				console.log("FAILED: User doesn't exist.")
+			}
+			else {
+				var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Ban info.",BanInfo:{BanStatus:outcome.rows[0].banned,BannedSince:outcome.rows[0].bannedsince,BannedUntil:outcome.rows[0].banneduntil}});
+				res.send(output)
+				console.log("SUCCESS: Ban info.")
+			}
+		}
+	})
+})
+
 
 
 
