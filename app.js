@@ -296,8 +296,9 @@ app.get('/rank/top/:amount',function(req,res){
 		else {
 			var localRanks=[amount];
 			for (var i = 0; i < outcome.rows.length; i++) {
+				console.log("retrieving profile data for "+i)
 				var Profile={DisplayName:outcome.rows[i].displayname,Score:outcome.rows[i].score}
-				localRanks[i]=Profile;
+				//localRanks[i]=Profile;
 			}
 			var ouput=JSON.stringify({Status: "FAILED",StatusDescription: "User already exists.",Ranks:localRanks})
 			res.send(output)
