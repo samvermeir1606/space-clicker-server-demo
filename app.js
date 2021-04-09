@@ -210,14 +210,21 @@ app.get('/player/scorechange/:username/:newscore',function(req,res){
 				console.log("FAILED: User doesn't exist.")
 			}
 			else {
-				client.query("UPDATE userlist SET score= '"+newscore+"' WHERE username='"+username+"';", (err, outcome) => {   
-					if (err) throw err;
-					else {
-						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Score updated."});
+				if (newscore<=outcome.rows[0].score) {
+						var output=JSON.stringify({Status:"FAILED",StatusDescription: "Score not higher."});
 						res.send(output)
-						console.log("SUCCESS: Score changed")
-					}
-				})
+						console.log("FAILED: Score not higher.")
+				}
+				else {
+					client.query("UPDATE userlist SET score= '"+newscore+"' WHERE username='"+username+"';", (err, outcome) => {   
+						if (err) throw err;
+						else {
+							var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Score updated."});
+							res.send(output)
+							console.log("SUCCESS: Score changed.")
+						}
+					})
+				}
 			}
 		}
 	})
@@ -275,6 +282,29 @@ app.get('/player/ban/info/:username',function(req,res){
 })
 
 
+
+
+
+
+// RANK ENDPOINTS
+app.get('/rank/top/:amount',function(req,res){
+	var amount=req.params.amount;
+	console.log("Top Rank Request received for amount: "+amount)
+	// check if player already exists
+	client.query("SELECT * FROM userlist ORDER BY score DESC LIMIT "+amount+";", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			var localRanks=[amount];
+			for (var i = 0; i < amount; i++) {
+				var Profile={DisplayName:outcome.rows[i].displayname,Score:outcome.rows[i].score}
+				localRanks[i]=Profile;
+			}
+			var ouput=JSON.stringify({Status: "FAILED",StatusDescription: "User already exists.",Ranks:localRanks})
+			res.send(output)
+			console.log("SUCCES: Top Rank responded")
+		}
+	})
+})
 
 
 
