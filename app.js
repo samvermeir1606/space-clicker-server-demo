@@ -297,12 +297,12 @@ app.get('/rank/top/:amount',function(req,res){
 		else {
 			var localRanks=[amount];
 			for (var i = 0; i < outcome.rows.length; i++) {
-				console.log("retrieving profile data for "+i)
-				console.log(outcome.rows[i])
+				//console.log("retrieving profile data for "+i)
+				//console.log(outcome.rows[i])
 				var Profile={DisplayName:outcome.rows[i].displayname,Score:outcome.rows[i].score}
 				//localRanks[i]=Profile;
 			}
-			var ouput=JSON.stringify({Status: "FAILED",StatusDescription: "User already exists.",Ranks:localRanks})
+			var output=JSON.stringify({Status: "FAILED",StatusDescription: "User already exists.",Ranks:localRanks})
 			res.send(output)
 			console.log("SUCCES: Top Rank responded")
 		}
