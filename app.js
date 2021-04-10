@@ -317,33 +317,36 @@ app.get('/rank/playerrank/:username',function(req,res){
 	client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcome) => {   
 		if (err) throw err;
 		else {
-
-
-
-
-
 			var localplayerrank=0;
 			for (var i = 0; i < outcome.rows.length; i++) {
-				localplayerrank+=1
+				
 				if (outcome.rows[i].username==username) {
 					break;
 				}
+				localplayerrank+=1
 			}
-			if (localplayerrank-1==0) {
-				//we checken hier niet of dit de enige is in de database, als er maar 1 persoon in de database zit, dan gaat dit een error geven
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:null,LowerPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score}})
+			var localLowerPlayer=null;
+			var localHigherPlayer=null;
 
-			} 
-			else if (localplayerrank==outcome.rows.length) {
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:{DisplayName:outcome.rows[i-1].displayname,Score:outcome.rows[i-1].score},LowerPlayer:null})
-
-			} 
+			//Set the higherplayer
+			if (localplayerrank==0) {
+				HigherPlayer=null;
+			}
 			else {
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score},LowerPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score}})
+				HigherPlayer={DisplayName:outcome.rows[i-1].displayname,Score:outcome.rows[i-1].score};
+			}
 
-			}  
+			// Set the lowerplayer
+			if (localplayerrank+1==outcome.rows.length) {
+				LowerPlayer=null;
+			}
+			else {
+				LowerPlayer={DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score};
+			}
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
+
 			res.send(output)
-			console.log("SUCCES: Top Rank responded")
+			console.log("SUCCES: Player Rank responded")
 		}
 	})
 })
