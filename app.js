@@ -182,7 +182,7 @@ app.get('/player/login/:username',function(req,res){
 						client.query("SELECT * FROM userlist WHERE username = '"+username+"';", (err, outcomegetinfo) => {   
 							if (err) throw err;
 							else {
-								var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",lastonline:previouslastonline,BannedState: outcome.rows[0].banned});
+								var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Player logged in.",lastonline:previouslastonline,BannedState: outcomegetinfo.rows[0].banned,Score:outcomegetinfo.rows[0].score});
 								res.send(output)
 								console.log("SUCCESS: Player logged in")
 							}
