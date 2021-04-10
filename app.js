@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const tableName="userlist"
+var cors = require('cors')
 
 
 
@@ -15,7 +16,7 @@ const client = new Client({
 client.connect();
 
 
-
+app.use(cors())
 app.listen(process.env.PORT || port, () => {
   	console.log(`Example app listening at http://localhost:${port}`)
   	console.log("")
