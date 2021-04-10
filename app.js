@@ -319,29 +319,36 @@ app.get('/rank/playerrank/:username',function(req,res){
 		else {
 			var localplayerrank=0;
 			for (var i = 0; i < outcome.rows.length; i++) {
-				
+				localplayerrank+=1
 				if (outcome.rows[i].username==username) {
 					break;
 				}
-				localplayerrank+=1
+
 			}
+			console.log("local player rank: "+localplayerrank)
 			var localLowerPlayer=null;
 			var localHigherPlayer=null;
 
 			//Set the higherplayer
-			if (localplayerrank==0) {
+			if (localplayerrank-1==0) {
+				console.log("First True")
 				HigherPlayer=null;
 			}
 			else {
-				HigherPlayer={DisplayName:outcome.rows[i-1].displayname,Score:outcome.rows[i-1].score};
+				console.log("First false")
+				HigherPlayer={DisplayName:outcome.rows[localplayerrank-1].displayname,Score:outcome.rows[localplayerrank-1].score};
 			}
 
 			// Set the lowerplayer
+			console.log("rows length: "+outcome.rows.length)
 			if (localplayerrank+1==outcome.rows.length) {
+				console.log("Second True")
+
 				LowerPlayer=null;
 			}
 			else {
-				LowerPlayer={DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score};
+				console.log("Second True")
+				LowerPlayer={DisplayName:outcome.rows[localplayerrank+1].displayname,Score:outcome.rows[localplayerrank+1].score};
 			}
 			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank+1,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
 
