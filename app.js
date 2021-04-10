@@ -155,18 +155,11 @@ app.get('/player/login/:username',function(req,res){
 				client.query("INSERT INTO userlist(username, displayname, accountcreated, lastonline, score, highscoreposted, banned) VALUES ('"+username+"','NoNameYet','"+accountcreated+"','"+lastonline+"', 0,'"+highscoreposted+"',0);", (err, outcome) => {   
 					if (err) throw err;
 					else {
-
-
-
-						var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "User created", BannedState: "0"});
+						var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "User Created."});
 						res.send(output)
-						console.log("User Created in database")
+						console.log("SUCCESS: User Created.")
 					}
 				})
-
-				var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "User Created."});
-				res.send(output)
-				console.log("SUCCESS: User Created.")
 			}
 			else {
 				console.log("TODO: Use the 'banned since' and 'banned until' to determine if someone is still banned and set the dates in the database")
