@@ -288,18 +288,18 @@ app.get('/player/ban/info/:username',function(req,res){
 
 // RANK ENDPOINTS
 app.get('/rank/top/:amount',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
 	var amount=req.params.amount;
 	console.log("Top Rank Request received for amount: "+amount)
 	// check if player already exists
 	client.query("SELECT * FROM userlist ORDER BY score DESC LIMIT "+amount+";", (err, outcome) => {   
 		if (err) throw err;
-
 		else {
 			var localRanks=[outcome.rows.length];
 			for (var i = 0; i < outcome.rows.length; i++) {
 				//console.log("retrieving profile data for "+i)
 				//console.log(outcome.rows[i])
-				var Profile={DisplayName:outcome.rows[i].displayname,Score:outcome.rows[i].score}
+				var Profile={DisplayName:outcome.rows[i].displayname,Score:outcome.rows[i].score,Rank:i+1}
 				localRanks[i]=Profile;
 			}
 			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Top "+amount+" rank.",Ranks:localRanks})
@@ -308,6 +308,52 @@ app.get('/rank/top/:amount',function(req,res){
 		}
 	})
 })
+
+app.get('/rank/playerrank/:username',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var username=req.params.username;
+	console.log("Player Rank Request received for username: "+username)
+	// check if player already exists
+	client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcome) => {   
+		if (err) throw err;
+		else {
+
+
+
+
+
+			var localplayerrank=0;
+			for (var i = 0; i < outcome.rows.length; i++) {
+				localplayerrank+=1
+				if (outcome.rows[i].username==username) {
+					break;
+				}
+			}
+			if (localplayerrank-1==0) {
+				//we checken hier niet of dit de enige is in de database, als er maar 1 persoon in de database zit, dan gaat dit een error geven
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:null,LowerPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:}})
+
+			} 
+			else if (localplayerrank==outcome.rows.length) {
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank})
+
+			} 
+			else {
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank})
+
+			}  
+			res.send(output)
+			console.log("SUCCES: Top Rank responded")
+		}
+	})
+})
+
+
+
+
+
+
+
 
 
 
