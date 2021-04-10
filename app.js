@@ -343,7 +343,7 @@ app.get('/rank/playerrank/:username',function(req,res){
 			else {
 				LowerPlayer={DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score};
 			}
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank+1,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
 
 			res.send(output)
 			console.log("SUCCES: Player Rank responded")
