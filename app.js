@@ -283,9 +283,6 @@ app.get('/player/ban/info/:username',function(req,res){
 
 
 
-
-
-
 // RANK ENDPOINTS
 app.get('/rank/top/:amount',function(req,res){
 	res.setHeader('Content-Type', 'application/json');
@@ -380,7 +377,7 @@ app.get('/rank/getplayer/rank/:rank',function(req,res){
 				console.log("FAILED: Rank doesn't exist.")
 			}
 			else {
-				client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcome) => {   
+				client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcomeOrder) => {   
 					if (err) throw err;
 					else {
 
@@ -393,17 +390,18 @@ app.get('/rank/getplayer/rank/:rank',function(req,res){
 							localHigherPlayer=null;
 						}
 						else {
-							localHigherPlayer={DisplayName:outcome.rows[localplayerrank-2].displayname,Score:outcome.rows[localplayerrank-2].score};
+							localHigherPlayer={DisplayName:outcomeOrder.rows[localplayerrank-2].displayname,Score:outcomeOrder.rows[localplayerrank-2].score};
 						}
 			
 						// Set the lowerplayer
-						if (localplayerrank==outcome.rows.length) {
+						if (localplayerrank==outcomeOrder.rows.length) {
 							localLowerPlayer=null;
 						}
 						else {
-							localLowerPlayer={DisplayName:outcome.rows[localplayerrank].displayname,Score:outcome.rows[localplayerrank].score};
+							localLowerPlayer={DisplayName:outcomeOrder.rows[localplayerrank].displayname,Score:outcomeOrder.rows[localplayerrank].score};
 						}
-						var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
+
+						var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerData:{DisplayName:outcomeOrder.rows[localplayerrank-1].displayname,Score:outcomeorder.rows[localplayerrank-1].score},PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
 			
 						res.send(output)
 						console.log("SUCCES: Player Rank responded")
@@ -416,14 +414,6 @@ app.get('/rank/getplayer/rank/:rank',function(req,res){
 	})
 	//TODO: check if player exists!!!
 })
-
-
-
-
-
-
-
-
 
 
 
@@ -458,12 +448,116 @@ app.get('/database/deleteone/userid/:userid',function(req,res){
 	})
 })
 
+app.get('/database/deleteone/rank/:rank',function(req,res){
+	client.query("SELECT * FROM userlist;", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (req.params.rank>outcome.rows.length) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "Rank doesn't exist."});
+				res.send(output)
+				console.log("FAILED: Rank doesn't exist.")
+			}
+			else {
+
+				client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcomeOrder) => {   
+					if (err) throw err;
+					else {
+						client.query("DELETE FROM userlist WHERE userid= "+outcomeOrder.rows[req.params.rank-1].userid+";", (err, outcomeDelete) => {   
+							if (err) throw err;
+							else {
+								var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Deleted player at rank.",Data:outcomeDelete})
+								res.send(output)
+								console.log("SUCCES: Delete Player Rank responded")
+		
+							}
+						})
+
+					}
+				})
+			}
+		}
+	})
+	
+})
+
 app.get('/database/deleteone/username/:username',function(req,res){
 	client.query("DELETE FROM userlist WHERE username = "+req.params.username+";", (err, outcome) => {   
 		if (err) throw err;
 		else {
 			res.send(outcome)
 			console.log("DELETE ONE requested: responded SUCCESS")
+		}
+	})
+})
+
+app.get('/database/showatrank/:rank',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var localrank=req.params.rank;
+	console.log("SHOW Player At Rank Request received for rank: "+localrank)
+
+	// check if player already exists
+	client.query("SELECT * FROM userlist;", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (localrank>outcome.rows.length) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "Rank doesn't exist."});
+				res.send(output)
+				console.log("FAILED: Rank doesn't exist.")
+			}
+			else {
+				client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcomeorder) => {   
+					if (err) throw err;
+					else {
+
+						var localplayerrank=localrank;
+						var localLowerPlayer=null;
+						var localHigherPlayer=null;
+			
+						//Set the higherplayer
+						if (localplayerrank-1==0) {
+							localHigherPlayer=null;
+						}
+						else {
+							localHigherPlayer={DisplayName:outcomeorder.rows[localplayerrank-2].displayname,Score:outcomeorder.rows[localplayerrank-2].score};
+						}
+			
+						// Set the lowerplayer
+						if (localplayerrank==outcomeorder.rows.length) {
+							localLowerPlayer=null;
+						}
+						else {
+							localLowerPlayer={DisplayName:outcomeorder.rows[localplayerrank].displayname,Score:outcomeorder.rows[localplayerrank].score};
+						}
+						var localPlayerdata=outcomeorder.rows[localplayerrank-1]
+						var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerData:localPlayerdata,PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
+			
+						res.send(output)
+						console.log("SUCCES: Show Player Rank responded")
+					}
+				})
+			}
+		}
+	})
+})
+
+app.get('/database/showatuserid/:userid',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var localuserid=req.params.userid;
+	console.log("SHOW Player At userid Request received for userid: "+localuserid)
+	client.query("SELECT * FROM userlist WHERE userid = "+localuserid+";", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (outcome.rows.length==0) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "userid doesn't exist."});
+				res.send(output)
+				console.log("FAILED: userid doesn't exist.")
+			}
+			else {
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Show userid.",PlayerData:outcome.rows[0]})
+			res.send(output)
+			console.log("SUCCES: Show userid responded")
+			}
+
 		}
 	})
 })
