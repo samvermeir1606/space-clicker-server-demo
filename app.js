@@ -331,15 +331,15 @@ app.get('/rank/playerrank/:username',function(req,res){
 			}
 			if (localplayerrank-1==0) {
 				//we checken hier niet of dit de enige is in de database, als er maar 1 persoon in de database zit, dan gaat dit een error geven
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:null,LowerPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:}})
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:null,LowerPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score}})
 
 			} 
 			else if (localplayerrank==outcome.rows.length) {
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank})
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:{DisplayName:outcome.rows[i-1].displayname,Score:outcome.rows[i-1].score},LowerPlayer:null})
 
 			} 
 			else {
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank})
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score},LowerPlayer:{DisplayName:outcome.rows[i+1].displayname,Score:outcome.rows[i+1].score}})
 
 			}  
 			res.send(output)
