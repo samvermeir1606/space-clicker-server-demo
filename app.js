@@ -363,10 +363,59 @@ app.get('/rank/playerrank/:username',function(req,res){
 		}
 	})
 	//TODO: check if player exists!!!
-
 })
 
+app.get('/rank/getplayer/rank/:rank',function(req,res){
+	res.setHeader('Content-Type', 'application/json');
+	var localrank=req.params.rank;
+	console.log("Player At Rank Request received for rank: "+localrank)
 
+	// check if player already exists
+	client.query("SELECT * FROM userlist;", (err, outcome) => {   
+		if (err) throw err;
+		else {
+			if (localrank>outcome.rows.length) {
+				var output=JSON.stringify({Status: "FAILED",StatusDescription: "Rank doesn't exist."});
+				res.send(output)
+				console.log("FAILED: Rank doesn't exist.")
+			}
+			else {
+				client.query("SELECT * FROM userlist ORDER BY score DESC;", (err, outcome) => {   
+					if (err) throw err;
+					else {
+
+						var localplayerrank=localrank;
+						var localLowerPlayer=null;
+						var localHigherPlayer=null;
+			
+						//Set the higherplayer
+						if (localplayerrank-1==0) {
+							localHigherPlayer=null;
+						}
+						else {
+							localHigherPlayer={DisplayName:outcome.rows[localplayerrank-2].displayname,Score:outcome.rows[localplayerrank-2].score};
+						}
+			
+						// Set the lowerplayer
+						if (localplayerrank==outcome.rows.length) {
+							localLowerPlayer=null;
+						}
+						else {
+							localLowerPlayer={DisplayName:outcome.rows[localplayerrank].displayname,Score:outcome.rows[localplayerrank].score};
+						}
+						var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
+			
+						res.send(output)
+						console.log("SUCCES: Player Rank responded")
+					}
+	})
+
+
+			}
+		}
+	})
+	//TODO: check if player exists!!!
+})
 
 
 
