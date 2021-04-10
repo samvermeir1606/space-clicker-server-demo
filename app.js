@@ -333,7 +333,7 @@ app.get('/rank/playerrank/:username',function(req,res){
 				localHigherPlayer=null;
 			}
 			else {
-				localHigherPlayer={DisplayName:outcome.rows[localplayerrank-1].displayname,Score:outcome.rows[localplayerrank-1].score};
+				localHigherPlayer={DisplayName:outcome.rows[localplayerrank-2].displayname,Score:outcome.rows[localplayerrank-2].score};
 			}
 
 			// Set the lowerplayer
@@ -341,9 +341,9 @@ app.get('/rank/playerrank/:username',function(req,res){
 				localLowerPlayer=null;
 			}
 			else {
-				localLowerPlayer={DisplayName:outcome.rows[localplayerrank+1].displayname,Score:outcome.rows[localplayerrank+1].score};
+				localLowerPlayer={DisplayName:outcome.rows[localplayerrank].displayname,Score:outcome.rows[localplayerrank].score};
 			}
-			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank+1,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
+			var output=JSON.stringify({Status: "SUCCESS",StatusDescription: "Player Rank.",PlayerRank:localplayerrank,HigherPlayer:localHigherPlayer,LowerPlayer:localLowerPlayer})
 
 			res.send(output)
 			console.log("SUCCES: Player Rank responded")
