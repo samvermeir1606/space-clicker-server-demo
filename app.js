@@ -212,7 +212,7 @@ app.get('/player/scorechange/:username/:newscore',function(req,res){
 				else {
 					var highscoreposted = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
 
-					client.query("UPDATE userlist SET score= '"+newscore+"',highscoreposted='"+highscoreposted+" WHERE username='"+username+"';", (err, outcome) => {   
+					client.query("UPDATE userlist SET score= '"+newscore+"', highscoreposted='"+highscoreposted+"' WHERE username='"+username+"';", (err, outcome) => {   
 						if (err) throw err;
 						else {
 							var output=JSON.stringify({Status:"SUCCESS",StatusDescription: "Score updated."});
